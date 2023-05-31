@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Post</title>
+</head>
+<body>
+      <div>
+        <h1>Blog post Application</h1>
+        <h2>Save Post</h2>
+        <form th:action="@{/savePost}" th:object="${posts}" method="post">
+            <input type="text" th:field="*{title}" placeholder="Enter the title of the post">
+            <input type="text" th:field="*{content}" placeholder="Enter the content of the post">
+            <input type="date" th:field="*{publishedAt}" placeholder="Enter the date of the post">
+            <div th:object="${tags}" >
+                <input type="text" th:field="*{name}" placeholder="Enter the tag Name">
+            </div>
+
+            <button type="submit" >Save post</button>
+        </form>
+      </div>
+</body>
+</html>

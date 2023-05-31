@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>Blog Post List</h1>
+    <form action="/showNewPostAdd">
+        <input type="submit" value="AddData">
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>post Id</th>
+            <th>post title</th>
+            <th>post excerpt</th>
+            <th>post content</th>
+            <th>post author</th>
+            <th>post published_at</th>
+            <th>post is_published</th>
+            <th>post created_at</th>
+            <th>post updated_at</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="listItem : ${PostsList}">
+            <td th:text="${listItem.title}"></td>
+            <td th:text="${listItem.author}"></td>
+            <td th:text="${listItem.content}"></td>
+            <td th:date="${listItem.publishedAt}"></td>
+            <td th:text="${listItem.isPublished}"></td>
+            <td th:text="${listItem.createdAt}"></td>
+            <td th:text="${listItem.updatedAt}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
