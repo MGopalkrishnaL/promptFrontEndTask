@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>Comment</h1>
+<form th:action="@{/comment}" th:object="${Comment}" method="post">
+  <label for="name">Name:</label>
+  <input type="text" id="name" th:field="*{name}" placeholder="Enter the Name of the User">
+  <label for="email">Email:</label>
+  <input type="email" id="email" th:field="*{email}" placeholder="Enter the email">
+  <label for="comment">Comment:</label>
+  <textarea id="comment" th:field="*{comment}" placeholder="Enter your content in this blog"></textarea>
+  <input type="hidden" th:value="${post_id}" name="post_id">
+  <input type="hidden" th:field="*{id}">
+  <button type="submit">Submit</button>
+  <div sec:authorize="isAuthenticated()">
+    <input type="hidden" th:value="*{#authentication.principal.username}" name="userName">
+  </div>
+</form>
+</body>
+</html>
