@@ -1,23 +1,82 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>New Post</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 60px;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        label {
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        input[type="text"],
+        textarea {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 100%;
+        }
+        textarea {
+            height: 400px;
+            width: 100%;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 10%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-      <div>
-        <h1>Blog post Application</h1>
-        <h2>Save Post</h2>
-        <form th:action="@{/savePost}" th:object="${posts}" method="post">
-            <input type="text" th:field="*{title}" placeholder="Enter the title of the post">
-            <input type="text" th:field="*{content}" placeholder="Enter the content of the post">
-            <input type="date" th:field="*{publishedAt}" placeholder="Enter the date of the post">
-            <div th:object="${tags}" >
-                <input type="text" th:field="*{name}" placeholder="Enter the tag Name">
-            </div>
-
-            <button type="submit" >Save post</button>
-        </form>
-      </div>
+<div>
+    <h1>Blog Post Application</h1>
+    <h2>Save Post</h2>
+    <form th:action="@{/savePost}" th:object="${posts}" method="post">
+        <label for="title">Title:</label>
+        <input type="text" id="title" th:field="*{title}" placeholder="Enter the title of the post">
+        <section sec:authorize="hasAuthority('ADMIN')">
+            <label>Author:</label>
+            <input type="text" th:field="*{author}" placeholder="Enter the Author Name">
+        </section>
+        <label>Tags:</label>
+        <input type="text" name="tags" placeholder="Enter the tag Name" th:value="${tags}">
+        <label for="content">Content:</label>
+        <textarea id="content" th:field="*{content}" placeholder="Enter your content in this blog"></textarea>
+        <input type="hidden" th:field="*{id}" th:value="${posts.id}">
+        <button type="submit">Publish</button>
+    </form>
+</div>
 </body>
 </html>

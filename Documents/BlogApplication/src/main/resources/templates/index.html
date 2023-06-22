@@ -1,68 +1,274 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Home</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
         }
 
         h1 {
             color: #333;
+            text-align: center;
+            padding: 20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
+        header {
+            background-color: #f5f5f5;
             padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f5f5f5;
         }
+
+        .menu a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        form.search-form {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .search-form input[type="text"] {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-form button[type="submit"] {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .filters {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+
+        .filters nav {
+            margin-bottom: 10px;
+        }
+
+        .filters select {
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+
+        .filters input[type="submit"] {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .post-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(700px, 1fr));
+            grid-gap: 20px;
+        }
+
+        .postdiv {
+            background-color: #fff;
+            width: 800px;
+            height: 210px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 20px;
+        }
+
+        .postdiv > * {
+            margin-bottom: 5px;
+        }
+
+        .postdiv h1,
+        .postdiv h4,
+        .postdiv h5 {
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .postdiv form button[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .navigation a {
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+        }
+        .horizontal-form {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.horizontal-select {
+    margin-right: 10px;
+}
+
+.submit-button {
+    margin-top: 10px;
+}
     </style>
 </head>
 <body>
-<div>
-    <h1>Blog Post List</h1>
-    <form action="/showNewPostAdd">
-        <input type="submit" value="AddData">
-    </form>
-    <table>
-        <thead>
-        <tr>
-            <th>post Id</th>
-            <th>post title</th>
-            <th>post excerpt</th>
-            <th>post content</th>
-            <th>post author</th>
-            <th>post published_at</th>
-            <th>post is_published</th>
-            <th>post created_at</th>
-            <th>post updated_at</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="listItem : ${PostsList}">
-            <td th:text="${listItem.title}"></td>
-            <td th:text="${listItem.author}"></td>
-            <td th:text="${listItem.content}"></td>
-            <td th:date="${listItem.publishedAt}"></td>
-            <td th:text="${listItem.isPublished}"></td>
-            <td th:text="${listItem.createdAt}"></td>
-            <td th:text="${listItem.updatedAt}"></td>
-        </tr>
-        </tbody>
-    </table>
+<h1>My Blog Application</h1>
+<div sec:authorize="isAuthenticated()">
+    User:<span sec:authentication="principal.username"></span>
+    <br>
+    Password :<span sec:authentication="principal.authorities"></span>
+</div>
+<nav class="main">
+    <div class="menu">
+        <div>
+            <br>
+            <form action="/newPost" class="add-button">
+                <input type="submit" value="Add Data">
+            </form>
+            <br>
+        <form th :action="@{/home}" method="get">
+            <label for="category">SortBy:</label>
+            <select id="category" name="field" onchange="this.form.submit()">
+                <option value="id" th:selected="${field == 'id'}">id</option>
+                <option value="title" th:selected="${field == 'title'}">Title</option>
+                <option value="content" th:selected="${field == 'content'}">Content</option>
+                <option value="publishedAt" th:selected="${field == 'publishedAt'}">PublishedAt</option>
+            </select>
+        </form>
+        </div>
+        <div>
+            <div sec:authorize="isAuthenticated()">
+            <form action="#" th:action="@{/logout}" method="post">
+                <input type="submit" value="LogOut"/>
+            </form>
+            </div>
+        <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">Login</a>
+            </div>
+                <br>
+            <form class="search-form" th:action="@{/home}">
+                <input id="search" name="search"  type="text" placeholder="Search">
+                <button type="submit">Search</button>
+            </form>
+            <br>
+        </div>
+    </div>
+    <div class="filters">
+        Filters:
+        <form th:action="@{/home}" class="horizontal-form">
+            <div class="horizontal-select">
+                <select name="author" multiple>
+                    <option value="" disabled selected>Author</option>
+                    <span th:each="author: ${authorList}">
+                    <option th:value="${author}" th:text="${author}"></option>
+                </span>
+                </select>
+            </div>
+            <div class="horizontal-select">
+                <select name="publishedAt" multiple>
+                    <option value="" disabled selected>PublishedAt</option>
+                    <span th:each="date: ${dateList}">
+                    <option th:value="${date}" th:text="${date}"></option>
+                </span>
+                </select>
+            </div>
+            <div class="horizontal-select">
+                <select name="tagName" multiple>
+                    <option value="" disabled selected>Tags</option>
+                    <span th:each="tag: ${tagsList}">
+                    <option th:value="${tag}" th:text="${tag}"></option>
+                </span>
+                </select>
+            </div>
+            <div class="submit-button">
+                <input type="submit" value="Apply">
+            </div>
+        </form>
+    </div>
+</nav>
+<div class="post-container">
+    <div th:each="listItem : ${PostsList}">
+        <form th:action="@{/post}">
+            <button type="submit">
+                <div class="postdiv">
+                    <h1 th:text="${listItem.title}"></h1>
+                    <br>
+                    <p th:text="${listItem.excerpt}"></p>
+                    <br>
+                    <h4 th:text="${listItem.author}"></h4>
+                    <br>
+                    <p>Published on: <span th:text="${listItem.publishedAt}"></span></p>
+                    <br>
+                    <p>Tags:
+                        <span th:each="tag : ${listItem.tagsList}">
+                            <span th:text="${tag.name}"></span>
+                        </span>
+                    </p>
+                    <input type="hidden" th:value="${listItem.id}" name="id">
+                    <div sec:authorize="isAuthenticated()">
+                        <input type="hidden" th:value="*{#authentication.principal.username}" name="userName">
+                    </div>
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+<div class="navigation" th:if ="${totalPages > 1}">
+    <div class="coL-sm-1">
+        <a th:if="${CurrentPage > 1}" th:href="@{'/home?' + '&pageNo=' + ${CurrentPage - 1} +
+        ${field != null && field != '' ? '&field=' + field : ''} +
+        ${author !=null && author !='' ? '&author=' + author:''} +
+        ${publishedAt != null && publishedAt!= '' ? '&publishedAt=' + publishedAt : ''} +
+        ${tagName != null && tagName != '' ? '&tagName=' + tagName : '' } +
+        ${search !=null && search != '' ? '&search=' + search : '' }
+         }">Previous</a>
+    </div>
+    <div class="coL-sm-1">
+        <a th:if="${CurrentPage < totalPages}" th:href="@{'/home?' + '&pageNo=' + ${CurrentPage + 1} +
+        ${field != null && field != '' ? '&field=' + field : ''} +
+        ${author !=null && author !='' ? '&author=' + author:''} +
+        ${publishedAt != null && publishedAt!= '' ? '&publishedAt=' + publishedAt : ''} +
+        ${tagName != null && tagName != '' ? '&tagName=' + tagName : '' } +
+        ${search !=null && search != '' ? '&search=' + search : '' }
+         }">Next</a>
+    </div>
 </div>
 </body>
 </html>
